@@ -1,95 +1,103 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JackMarksman | Home</title>
-  <style>
+ <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0a0a0a;
-      color: #e0e0e0;
-      overflow: hidden;
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #0a0a0a;
+        color: #e0e0e0;
+        /* overflow: hidden;  -- This was removed in the HTML I provided previously to allow scrolling */
     }
     canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
     }
     header {
-      text-align: center;
-      padding: 3rem 1rem 1rem;
-      border-bottom: 2px solid #228B22;
+        text-align: center;
+        padding: 3rem 1rem 1rem;
+        border-bottom: 2px solid #228B22; /* Kept original header border for now, can adjust if needed */
     }
     header h1 {
-      margin: 0;
-      font-size: 3rem;
-      color: #90ee90;
+        margin: 0;
+        font-size: 3rem;
+        color: #90ee90;
     }
     header p {
-      font-size: 1.2rem;
-      color: #ccc;
+        font-size: 1.2rem;
+        color: #ccc;
     }
     header .email {
-      font-size: 0.9rem;
-      color: #aaa;
-      margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #aaa;
+        margin-top: 0.5rem;
+    }
+    header .email a { /* Style for the email link */
+        color: #aaa;
+        text-decoration: none; /* Optional: Remove underline from link */
     }
     .links, .sublinks {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      margin: 2rem auto;
-      max-width: 800px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        margin: 2rem auto;
+        max-width: 800px;
     }
     .link, .sublink {
-      border: 2px solid #228B22;
-      padding: 1rem 1.5rem;
-      text-decoration: none;
-      color: #e0e0e0;
-      border-radius: 10px;
-      background-color: #111;
-      box-shadow: 0 5px 15px rgba(34,139,34,0.4);
-      transition: background 0.3s, transform 0.2s, box-shadow 0.3s, opacity 0.5s, filter 0.5s;
+        border: 2px solid #1E561E; /* Darker, less saturated green */
+        padding: 1rem 1.5rem;
+        text-decoration: none;
+        color: #e0e0e0;
+        border-radius: 10px;
+        background-color: #111; /* Base background for buttons */
+        box-shadow: 0 5px 15px rgba(30,86,30,0.3); /* Adjusted shadow color */
+        transition: background 0.3s, transform 0.2s, box-shadow 0.3s, opacity 0.5s, filter 0.5s;
     }
     .link:hover, .sublink:hover {
-      background: #124d12;
-      transform: translateY(-5px) scale(1.03);
-      box-shadow: 0 10px 25px rgba(34,139,34,0.6);
-      filter: brightness(1.1);
+        background: #124d12; /* Dark green hover, seems to fit well */
+        transform: translateY(-5px) scale(1.03);
+        box-shadow: 0 10px 25px rgba(30,86,30,0.5); /* Adjusted hover shadow */
+        filter: brightness(1.1);
     }
-    .link.github { background: linear-gradient(135deg, #333, #555); }
-    .link.twitch { background: linear-gradient(135deg, #6441a5, #8b5cf6); }
-    .link.youtube { background: linear-gradient(135deg, #ff0000, #cc0000); }
-    .link.instagram { background: linear-gradient(135deg, #e1306c, #f77737); }
-    .link.itchio { background: linear-gradient(135deg, #fa5c5c, #f84e4e); }
-    .sublink.snapchat { background: linear-gradient(135deg, #fffc00, #ffee00); color: #000; }
-    .sublink.steam { background: linear-gradient(135deg, #1b2838, #2a475e); }
-    .sublink.epic { background: linear-gradient(135deg, #313131, #555); }
-    .sublink.xbox { background: linear-gradient(135deg, #107c10, #1ed760); }
-    .sublink.playstation { background: linear-gradient(135deg, #003087, #0a3d91); }
+
+    /* Platform-specific button styles - adjusted gradients */
+    .link.github { background: linear-gradient(135deg, #333, #555); } /* Already quite muted, kept as is */
+    .link.twitch { background: linear-gradient(135deg, #5A3A94, #7C50E0); } /* Slightly darker/desaturated purple */
+    .link.youtube { background: linear-gradient(135deg, #B30000, #900000); } /* Darker red */
+    .link.instagram { background: linear-gradient(135deg, #C72A60, #D86830); } /* Darker/desaturated pink/orange */
+    .link.itchio { background: linear-gradient(135deg, #D84A4A, #CC3E3E); } /* Darker/desaturated red/pink */
+    
+    .sublink.snapchat { background: linear-gradient(135deg, #DDCB00, #C8B600); color: #1a1a1a; } /* Darker yellow, darker text for contrast */
+    .sublink.steam { background: linear-gradient(135deg, #1b2838, #2a475e); } /* Kept as is, fits well */
+    .sublink.epic { background: linear-gradient(135deg, #313131, #555); }    /* Kept as is, fits well */
+    .sublink.xbox { background: linear-gradient(135deg, #0E6B0E, #18A050); }  /* Darker green */
+    .sublink.playstation { background: linear-gradient(135deg, #002A70, #08357E); } /* Darker blue */
+
     .section-title {
-      text-align: center;
-      font-size: 1.8rem;
-      margin-top: 3rem;
-      color: #90ee90;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
+        text-align: center;
+        font-size: 1.8rem;
+        margin-top: 3rem;
+        color: #90ee90;
+        opacity: 0;
+        animation: fadeIn 1s ease forwards;
     }
     .traffic-cone {
-      font-size: 3rem;
-      text-align: center;
-      margin: 2rem 0 0;
-      opacity: 0;
-      animation: fadeIn 2s ease forwards;
+        font-size: 3rem;
+        text-align: center;
+        margin: 2rem 0 0;
+        opacity: 0;
+        animation: fadeIn 2s ease forwards;
     }
     @keyframes fadeIn {
-      to { opacity: 1; }
+        to { opacity: 1; }
     }
-  </style>
+</style>
 </head>
 <body>
   <canvas id="background"></canvas>
