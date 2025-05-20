@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,10 +7,16 @@
   <style>
     body {
       margin: 0;
-
       font-family: 'Segoe UI', sans-serif;
       background-color: #0a0a0a;
       color: #e0e0e0;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
     header {
       text-align: center;
@@ -25,6 +31,11 @@
     header p {
       font-size: 1.2rem;
       color: #ccc;
+    }
+    header .email {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 0.5rem;
     }
     .links, .sublinks {
       display: flex;
@@ -42,57 +53,135 @@
       border-radius: 10px;
       background-color: #111;
       box-shadow: 0 5px 15px rgba(34,139,34,0.4);
-      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s, opacity 0.5s, filter 0.5s;
     }
     .link:hover, .sublink:hover {
       background: #124d12;
-      transform: translateY(-5px);
+      transform: translateY(-5px) scale(1.03);
       box-shadow: 0 10px 25px rgba(34,139,34,0.6);
+      filter: brightness(1.1);
     }
+    .link.github { background: linear-gradient(135deg, #333, #555); }
+    .link.twitch { background: linear-gradient(135deg, #6441a5, #8b5cf6); }
+    .link.youtube { background: linear-gradient(135deg, #ff0000, #cc0000); }
+    .link.instagram { background: linear-gradient(135deg, #e1306c, #f77737); }
+    .link.itchio { background: linear-gradient(135deg, #fa5c5c, #f84e4e); }
+    .sublink.snapchat { background: linear-gradient(135deg, #fffc00, #ffee00); color: #000; }
+    .sublink.steam { background: linear-gradient(135deg, #1b2838, #2a475e); }
+    .sublink.epic { background: linear-gradient(135deg, #313131, #555); }
+    .sublink.xbox { background: linear-gradient(135deg, #107c10, #1ed760); }
+    .sublink.playstation { background: linear-gradient(135deg, #003087, #0a3d91); }
     .section-title {
       text-align: center;
       font-size: 1.8rem;
       margin-top: 3rem;
       color: #90ee90;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
     }
     .traffic-cone {
       font-size: 3rem;
       text-align: center;
       margin: 2rem 0 0;
+      opacity: 0;
+      animation: fadeIn 2s ease forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
+  <canvas id="background"></canvas>
   <header>
     <h1>JackMarksman</h1>
     <p>Hey, I’m Shane Kintz — PC fixer, streamer, oddball dev</p>
+    <div class="email">Contact: kintzshane48@gmail.com</div>
   </header>
 
   <div class="section-title">Community Links</div>
   <div class="links">
-    <a class="link" href="#">GitHub</a>
-    <a class="link" href="#">Twitch</a>
-    <a class="link" href="#">YouTube</a>
-    <a class="link" href="#">Instagram</a>
-    <a class="link" href="#">Itch.io</a>
+    <a class="link github" href="#">GitHub</a>
+    <a class="link twitch" href="#">Twitch</a>
+    <a class="link youtube" href="#">YouTube</a>
+    <a class="link instagram" href="#">Instagram</a>
+    <a class="link itchio" href="#">Itch.io</a>
   </div>
 
   <div class="section-title">Social Links</div>
   <div class="sublinks">
-    <a class="sublink" href="#">Snapchat</a>
-    <a class="sublink" href="#">Steam</a>
-    <a class="sublink" href="#">Epic</a>
-    <a class="sublink" href="#">Xbox</a>
-    <a class="sublink" href="#">PlayStation</a>
+    <a class="sublink snapchat" href="#">Snapchat</a>
+    <a class="sublink steam" href="#">Steam</a>
+    <a class="sublink epic" href="#" onclick="alert('Add me on Epic: JackMarksman')">Epic</a>
+    <a class="sublink xbox" href="#">Xbox</a>
+    <a class="sublink playstation" href="#">PlayStation</a>
   </div>
 
   <div class="traffic-cone">🛑🚧🛑</div>
 
-</body>
-</html>
+  <script>
+    const canvas = document.getElementById('background');
+    const ctx = canvas.getContext('2d');
 
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-  <div class="traffic-cone">🛑🚧🛑</div>
+    let ship = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      width: 40,
+      height: 20
+    };
 
+    let invaders = [];
+
+    for (let i = 0; i < 10; i++) {
+      invaders.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        speed: 0.5 + Math.random() * 1
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#ccc';
+      ctx.beginPath();
+      ctx.moveTo(ship.x, ship.y);
+      ctx.lineTo(ship.x - 20, ship.y + 30);
+      ctx.lineTo(ship.x + 20, ship.y + 30);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#777';
+      invaders.forEach(inv => {
+        ctx.beginPath();
+        ctx.arc(inv.x, inv.y, 25, 0, Math.PI * 2);
+        ctx.fill();
+        inv.y += inv.speed;
+        if (inv.y > canvas.height) {
+          inv.y = -30;
+          inv.x = Math.random() * canvas.width;
+        }
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    window.addEventListener('mousemove', (e) => {
+      ship.x = e.clientX;
+      ship.y = e.clientY;
+    });
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 </body>
 </html>
