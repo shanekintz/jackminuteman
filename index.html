@@ -49,22 +49,32 @@
         margin: 2rem auto;
         max-width: 500px;
     }
-    .link, .sublink {
-        border: 2px solid #1E561E; /* Darker, less saturated green */
-        padding: 1rem 1.5rem;
-        text-decoration: none;
-        color: #e0e0e0;
-        border-radius: 10px;
-        background-color: #111; /* Base background for buttons */
-        box-shadow: 0 5px 15px rgba(30,86,30,0.3); /* Adjusted shadow color */
-        transition: background 0.3s, transform 0.2s, box-shadow 0.3s, opacity 0.5s, filter 0.5s;
-    }
-    .link:hover, .sublink:hover {
-        background: #124d12; /* Dark green hover, seems to fit well */
-        transform: translateY(-5px) scale(1.03);
-        box-shadow: 0 10px 25px rgba(30,86,30,0.5); /* Adjusted hover shadow */
-        filter: brightness(1.1);
-    }
+   .link, .sublink {
+    border: 2px solid #1E561E; /* Darker, less saturated green border */
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    color: #e0e0e0;
+    border-radius: 10px;
+    background-color: #111; /* Base background for buttons */
+    /* New box-shadow for glowing effect */
+    box-shadow: 0 0 7px rgba(144, 238, 144, 0.3), /* Outer glow */
+                0 0 10px rgba(144, 238, 144, 0.2), /* Inner softer glow */
+                inset 0 0 5px rgba(144, 238, 144, 0.1); /* Optional: subtle inner glow on the button face */
+    text-shadow: 0 0 3px rgba(224, 224, 224, 0.2); /* Subtle default text glow */
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s, text-shadow 0.3s, opacity 0.5s, filter 0.5s; /* Added text-shadow to transition */
+}
+
+.link:hover, .sublink:hover {
+    background: #124d12; /* Dark green hover background */
+    transform: translateY(-5px) scale(1.03);
+    /* Enhanced box-shadow for more prominent glow on hover */
+    box-shadow: 0 0 12px rgba(144, 238, 144, 0.6), /* Brighter outer glow */
+                0 0 25px rgba(144, 238, 144, 0.4), /* Wider outer glow */
+                inset 0 0 8px rgba(144, 238, 144, 0.2); /* Optional: enhanced inner glow */
+    text-shadow: 0 0 8px rgba(224, 224, 224, 0.7); /* More prominent text glow on hover */
+    filter: brightness(1.15); /* Slightly increased brightness on hover */
+}
+
 
     /* Platform-specific button styles - adjusted gradients */
     .link.github { background: linear-gradient(135deg, #333, #555); } /* Already quite muted, kept as is */
