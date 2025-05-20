@@ -45,9 +45,9 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 1rem;
+        gap: 2rem;
         margin: 2rem auto;
-        max-width: 800px;
+        max-width: 500px;
     }
     .link, .sublink {
         border: 2px solid #1E561E; /* Darker, less saturated green */
@@ -158,9 +158,11 @@
 
       ctx.fillStyle = '#ccc';
       ctx.beginPath();
-      ctx.moveTo(ship.x, ship.y);
-      ctx.lineTo(ship.x - 20, ship.y + 30);
-      ctx.lineTo(ship.x + 20, ship.y + 30);
+      ctx.fillStyle = '#ccc'; // Ensure fillStyle is set for the ship
+      ctx.beginPath();
+      ctx.moveTo(ship.x, ship.y); // Tip of the ship
+      ctx.lineTo(ship.x - 10, ship.y + 30); // Left base point (slimmer)
+      ctx.lineTo(ship.x + 10, ship.y + 30);  // Right base point (slimmer)
       ctx.closePath();
       ctx.fill();
 
