@@ -7,6 +7,7 @@
   <style>
     body {
       margin: 0;
+
       font-family: 'Segoe UI', sans-serif;
       background-color: #0a0a0a;
       color: #e0e0e0;
@@ -39,11 +40,14 @@
       text-decoration: none;
       color: #e0e0e0;
       border-radius: 10px;
-      transition: background 0.3s, transform 0.2s;
+      background-color: #111;
+      box-shadow: 0 5px 15px rgba(34,139,34,0.4);
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
     }
     .link:hover, .sublink:hover {
       background: #124d12;
-      transform: scale(1.05);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(34,139,34,0.6);
     }
     .section-title {
       text-align: center;
@@ -64,7 +68,7 @@
     <p>Hey, I’m Shane Kintz — PC fixer, streamer, oddball dev</p>
   </header>
 
-  <div class="section-title">Main Links</div>
+  <div class="section-title">Community Links</div>
   <div class="links">
     <a class="link" href="#">GitHub</a>
     <a class="link" href="#">Twitch</a>
@@ -73,7 +77,7 @@
     <a class="link" href="#">Itch.io</a>
   </div>
 
-  <div class="section-title">Sub Links</div>
+  <div class="section-title">Social Links</div>
   <div class="sublinks">
     <a class="sublink" href="#">Snapchat</a>
     <a class="sublink" href="#">Steam</a>
@@ -81,6 +85,12 @@
     <a class="sublink" href="#">Xbox</a>
     <a class="sublink" href="#">PlayStation</a>
   </div>
+
+  <div class="traffic-cone">🛑🚧🛑</div>
+
+</body>
+</html>
+
 
   <div class="traffic-cone">🛑🚧🛑</div>
 
