@@ -166,17 +166,43 @@
       ctx.closePath();
       ctx.fill();
 
-      ctx.fillStyle = '#777';
-      invaders.forEach(inv => {
+     invaders.forEach(inv => {
+    const asteroidRadius = 35; // New, bigger radius
+    const mainAsteroidColor = '#777';
+    const spotColor = '#555'; // Darker spots
+    const numSpots = 3; // Number of spots per asteroid
+    const spotMaxRadius = 7; // Max radius of a spot
+
+    // Draw main asteroid body
+    ctx.fillStyle = mainAsteroidColor;
+    ctx.beginPath();
+    ctx.arc(inv.x, inv.y, asteroidRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw darker spots on the asteroid
+    ctx.fillStyle = spotColor;
+    for (let i = 0; i < numSpots; i++) {
+        // Ensure spots are within the main asteroid body
+        const angle = Math.random() * Math.PI * 2;
+        // Max distance for spot center from asteroid center
+        const maxDist = asteroidRadius - spotMaxRadius;
+        const distance = Math.random() * maxDist;
+        const spotX = inv.x + Math.cos(angle) * distance;
+        const spotY = inv.y + Math.sin(angle) * distance;
+        const currentSpotRadius = Math.random() * (spotMaxRadius - 2) + 2; // Random spot size (2 to spotMaxRadius)
+
         ctx.beginPath();
-        ctx.arc(inv.x, inv.y, 25, 0, Math.PI * 2);
+        ctx.arc(spotX, spotY, currentSpotRadius, 0, Math.PI * 2);
         ctx.fill();
-        inv.y += inv.speed;
-        if (inv.y > canvas.height) {
-          inv.y = -30;
-          inv.x = Math.random() * canvas.width;
-        }
-      });
+    }
+
+    // Move asteroid
+    inv.y += inv.speed;
+    if (inv.y > canvas.height + asteroidRadius) { // Adjusted condition for bigger asteroids
+        inv.y = -asteroidRadius; // Adjusted reset position
+        inv.x = Math.random() * canvas.width;
+    }
+});
 
       requestAnimationFrame(draw);
     }
