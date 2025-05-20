@@ -2,33 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Jack Minuteman - Tech Support & Projects</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JackMarksman | Home</title>
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #111;
-      color: #eee;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+    }
+    header {
       text-align: center;
-      padding: 50px;
+      padding: 3rem 1rem 1rem;
+      border-bottom: 2px solid #228B22;
     }
-    a {
-      color: #4ade80;
+    header h1 {
+      margin: 0;
+      font-size: 3rem;
+      color: #90ee90;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+    .links, .sublinks {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem auto;
+      max-width: 800px;
+    }
+    .link, .sublink {
+      border: 2px solid #228B22;
+      padding: 1rem 1.5rem;
       text-decoration: none;
-      margin: 0 10px;
+      color: #e0e0e0;
+      border-radius: 10px;
+      transition: background 0.3s, transform 0.2s;
     }
-    a:hover {
-      text-decoration: underline;
+    .link:hover, .sublink:hover {
+      background: #124d12;
+      transform: scale(1.05);
+    }
+    .section-title {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-top: 3rem;
+      color: #90ee90;
+    }
+    .traffic-cone {
+      font-size: 3rem;
+      text-align: center;
+      margin: 2rem 0 0;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to Jack Minuteman's Hub</h1>
-  <p>Your go-to for PC support, streams, and weird projects.</p>
-  <p>
-    <a href="https://twitch.tv/jackminuteman" target="_blank">Twitch</a>
-    <a href="https://twitter.com/" target="_blank">Twitter</a>
-    <a href="https://github.com/jackminuteman" target="_blank">GitHub</a>
-  </p>
+  <header>
+    <h1>JackMarksman</h1>
+    <p>Hey, I’m Shane Kintz — PC fixer, streamer, oddball dev</p>
+  </header>
+
+  <div class="section-title">Main Links</div>
+  <div class="links">
+    <a class="link" href="#">GitHub</a>
+    <a class="link" href="#">Twitch</a>
+    <a class="link" href="#">YouTube</a>
+    <a class="link" href="#">Instagram</a>
+    <a class="link" href="#">Itch.io</a>
+  </div>
+
+  <div class="section-title">Sub Links</div>
+  <div class="sublinks">
+    <a class="sublink" href="#">Snapchat</a>
+    <a class="sublink" href="#">Steam</a>
+    <a class="sublink" href="#">Epic</a>
+    <a class="sublink" href="#">Xbox</a>
+    <a class="sublink" href="#">PlayStation</a>
+  </div>
+
+  <div class="traffic-cone">🛑🚧🛑</div>
+
 </body>
 </html>
