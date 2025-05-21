@@ -5,6 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JackMarksman | Home</title>
  <style>
+   /* In your <style> section */
+
+#prevGameBtn {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    background-color: #111;
+    color: #90ee90;
+    border: 2px solid #228B22;
+    border-radius: 50%; /* Make them round */
+    width: 50px; /* Fixed width */
+    height: 50px; /* Fixed height */
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 10px rgba(144, 238, 144, 0.3);
+}
+
+#nextGameBtn {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    background-color: #111;
+    color: #90ee90;
+    border: 2px solid #228B22;
+    border-radius: 50%; /* Make them round */
+    width: 50px; /* Fixed width */
+    height: 50px; /* Fixed height */
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 10px rgba(144, 238, 144, 0.3);
+}
+
+#prevGameBtn:hover, #nextGameBtn:hover {
+    background-color: #228B22;
+    color: #0a0a0a;
+    box-shadow: 0 0 15px rgba(144, 238, 144, 0.7);
+}
+
+/* You can keep a display for the current game name if you like, maybe in the header or centered */
+#currentGameDisplay { /* Example: If you want to show it centered */
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    color: #90ee90;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background-color: rgba(10, 10, 10, 0.7);
+    padding: 5px 15px;
+    border-radius: 5px;
+}
     body {
         margin: 0;
         font-family: 'Segoe UI', sans-serif;
@@ -110,18 +174,14 @@
 </style>
 </head>
 <body>
-  <canvas id="background"></canvas>
-  <body>
     <canvas id="background"></canvas>
-    <div id="gameSwitcherUI">
-        <button id="prevGameBtn">◀</button>
-        <div id="currentGameDisplay">Original Animation</div>
-        <button id="nextGameBtn">▶</button>
-    </div>
+    <button id="prevGameBtn">◀</button>
+    <button id="nextGameBtn">▶</button>
+    <div id="currentGameDisplay">Original Animation</div>
+
     <header>
         </header>
     </body>
-  <header>
     <h1>JackMarksman</h1>
     <p>Hey, I’m Shane Kintz — PC fixer, streamer, oddball dev</p>
     <div class="email">Contact: kintzshane48@gmail.com</div>
@@ -150,82 +210,156 @@
   <script>
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
+// Add these new variables at the top of your <script>
+const prevGameBtn = document.getElementById('prevGameBtn');
+const nextGameBtn = document.getElementById('nextGameBtn');
+const currentGameDisplay = document.getElementById('currentGameDisplay');
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+const games = [
+    { name: 'Original Animation', initFunction: showOriginalAnimation },
+    { name: 'Minesweeper', initFunction: showMinesweeper },
+    { name: 'Snake', initFunction: showSnake }
+];
+let currentGameIndex = 0;
+let animationFrameId = null; // To control the original animation loop
 
-    let ship = {
-      x: canvas.width / 2,
-      y: canvas.height / 2,
-      width: 40,
-      height: 20
-    };
+// --- Modify your existing canvas and ship/invaders setup ---
+// const canvas = document.getElementById('background');
+// const ctx = canvas.getContext('2d');
+// ... (ship and invaders arrays) ...
+// Ensure these are accessible to the functions below.
 
-    let invaders = [];
+// --- Slightly modify your existing draw() function ---
+function draw() {
+    // This check is now handled by starting/stopping via animationFrameId
+    // if (games[currentGameIndex].name !== 'Original Animation') {
+    //     return; // Stop if not the active game
+    // }
 
-    for (let i = 0; i < 10; i++) {
-      invaders.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        speed: 0.5 + Math.random() * 1
-      });
-    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = '#ccc';
-      ctx.beginPath();
-      ctx.fillStyle = '#ccc'; // Ensure fillStyle is set for the ship
-      ctx.beginPath();
-      ctx.moveTo(ship.x, ship.y); // Tip of the ship
-      ctx.lineTo(ship.x - 10, ship.y + 30); // Left base point (slimmer)
-      ctx.lineTo(ship.x + 10, ship.y + 30);  // Right base point (slimmer)
-      ctx.closePath();
-      ctx.fill();
-
-     invaders.forEach(inv => {
-    const asteroidRadius = 35; // New, bigger radius
-    const mainAsteroidColor = '#777';
-    const spotColor = '#555'; // Darker spots
-    const numSpots = 3; // Number of spots per asteroid
-    const spotMaxRadius = 7; // Max radius of a spot
-
-    // Draw main asteroid body
-    ctx.fillStyle = mainAsteroidColor;
+    // Ship drawing logic (make sure 'ship' is defined)
+    ctx.fillStyle = '#ccc';
     ctx.beginPath();
-    ctx.arc(inv.x, inv.y, asteroidRadius, 0, Math.PI * 2);
+    ctx.moveTo(ship.x, ship.y);
+    ctx.lineTo(ship.x - 10, ship.y + 30); // Assuming slimmer ship
+    ctx.lineTo(ship.x + 10, ship.y + 30);
+    ctx.closePath();
     ctx.fill();
 
-    // Draw darker spots on the asteroid
-    ctx.fillStyle = spotColor;
-    for (let i = 0; i < numSpots; i++) {
-        // Ensure spots are within the main asteroid body
-        const angle = Math.random() * Math.PI * 2;
-        // Max distance for spot center from asteroid center
-        const maxDist = asteroidRadius - spotMaxRadius;
-        const distance = Math.random() * maxDist;
-        const spotX = inv.x + Math.cos(angle) * distance;
-        const spotY = inv.y + Math.sin(angle) * distance;
-        const currentSpotRadius = Math.random() * (spotMaxRadius - 2) + 2; // Random spot size (2 to spotMaxRadius)
+    // Invaders (asteroids) drawing logic (make sure 'invaders' is defined)
+    invaders.forEach(inv => {
+        const asteroidRadius = 35;
+        const mainAsteroidColor = '#777';
+        const spotColor = '#555';
+        const numSpots = 3;
+        const spotMaxRadius = 7;
 
+        ctx.fillStyle = mainAsteroidColor;
         ctx.beginPath();
-        ctx.arc(spotX, spotY, currentSpotRadius, 0, Math.PI * 2);
+        ctx.arc(inv.x, inv.y, asteroidRadius, 0, Math.PI * 2);
         ctx.fill();
-    }
 
-    // Move asteroid
-    inv.y += inv.speed;
-    if (inv.y > canvas.height + asteroidRadius) { // Adjusted condition for bigger asteroids
-        inv.y = -asteroidRadius; // Adjusted reset position
-        inv.x = Math.random() * canvas.width;
+        ctx.fillStyle = spotColor;
+        for (let i = 0; i < numSpots; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const maxDist = asteroidRadius - spotMaxRadius;
+            const distance = Math.random() * maxDist;
+            const spotX = inv.x + Math.cos(angle) * distance;
+            const spotY = inv.y + Math.sin(angle) * distance;
+            const currentSpotRadius = Math.random() * (spotMaxRadius - 2) + 2;
+            ctx.beginPath();
+            ctx.arc(spotX, spotY, currentSpotRadius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        inv.y += inv.speed;
+        if (inv.y > canvas.height + asteroidRadius) {
+            inv.y = -asteroidRadius;
+            inv.x = Math.random() * canvas.width;
+        }
+    });
+
+    animationFrameId = requestAnimationFrame(draw); // Continue animation
+}
+
+// --- New functions for game switching ---
+function stopAllGames() {
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
     }
+    // In the future, you might add logic here to stop Minesweeper/Snake game loops
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+}
+
+function showOriginalAnimation() {
+    stopAllGames();
+    currentGameDisplay.textContent = 'Original Animation';
+    // Optional: Reset ship/invader positions if desired
+    // ship.x = canvas.width / 2;
+    // ship.y = canvas.height / 2;
+    // Re-initialize invaders if needed
+    if (!animationFrameId) { // Start only if not already running
+       draw(); // This will set animationFrameId
+    }
+}
+
+function showMinesweeper() {
+    stopAllGames();
+    currentGameDisplay.textContent = 'Minesweeper';
+    ctx.fillStyle = '#0a0a0a'; // Background
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+    ctx.font = "bold 30px 'Segoe UI'";
+    ctx.fillStyle = '#90ee90';
+    ctx.textAlign = "center";
+    ctx.fillText("Minesweeper Game Area", canvas.width / 2, canvas.height / 2);
+    // Placeholder: Add Minesweeper initialization logic here
+}
+
+function showSnake() {
+    stopAllGames();
+    currentGameDisplay.textContent = 'Snake';
+    ctx.fillStyle = '#0a0a0a'; // Background
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+    ctx.font = "bold 30px 'Segoe UI'";
+    ctx.fillStyle = '#90ee90';
+    ctx.textAlign = "center";
+    ctx.fillText("Snake Game Area", canvas.width / 2, canvas.height / 2);
+    // Placeholder: Add Snake initialization logic here
+}
+
+function updateGameView() {
+    games[currentGameIndex].initFunction();
+}
+
+prevGameBtn.addEventListener('click', () => {
+    currentGameIndex--;
+    if (currentGameIndex < 0) {
+        currentGameIndex = games.length - 1; // Wrap around
+    }
+    updateGameView();
 });
 
-      requestAnimationFrame(draw);
+nextGameBtn.addEventListener('click', () => {
+    currentGameIndex++;
+    if (currentGameIndex >= games.length) {
+        currentGameIndex = 0; // Wrap around
     }
+    updateGameView();
+});
+
+// --- Initial setup ---
+// Make sure the mousemove and resize listeners don't interfere when other games are active.
+// For now, they will still affect the 'ship' object.
+// Consider adding/removing these listeners in showOriginalAnimation() vs other game modes.
+
+// Initial call to set up the first game view (Original Animation)
+updateGameView();
+// window.addEventListener('mousemove', ... ); // Keep these for the original animation
+// window.addEventListener('resize', ... ); // Keep these for the original animation
 
     draw();
 
