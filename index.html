@@ -4,184 +4,123 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JackMarksman | Home</title>
- <style>
-   /* In your <style> section */
-
-#prevGameBtn {
-    position: fixed;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
-    background-color: #111;
-    color: #90ee90;
-    border: 2px solid #228B22;
-    border-radius: 50%; /* Make them round */
-    width: 50px; /* Fixed width */
-    height: 50px; /* Fixed height */
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-    box-shadow: 0 0 10px rgba(144, 238, 144, 0.3);
-}
-
-#nextGameBtn {
-    position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
-    background-color: #111;
-    color: #90ee90;
-    border: 2px solid #228B22;
-    border-radius: 50%; /* Make them round */
-    width: 50px; /* Fixed width */
-    height: 50px; /* Fixed height */
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
-    box-shadow: 0 0 10px rgba(144, 238, 144, 0.3);
-}
-
-#prevGameBtn:hover, #nextGameBtn:hover {
-    background-color: #228B22;
-    color: #0a0a0a;
-    box-shadow: 0 0 15px rgba(144, 238, 144, 0.7);
-}
-
-/* You can keep a display for the current game name if you like, maybe in the header or centered */
-#currentGameDisplay { /* Example: If you want to show it centered */
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    color: #90ee90;
-    font-size: 1.2rem;
-    font-weight: bold;
-    background-color: rgba(10, 10, 10, 0.7);
-    padding: 5px 15px;
-    border-radius: 5px;
-}
+  <style>
     body {
-        margin: 0;
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #0a0a0a;
-        color: #e0e0e0;
-        /* overflow: hidden;  -- This was removed in the HTML I provided previously to allow scrolling */
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+      overflow: hidden;
     }
     canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: -1;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
     header {
-        text-align: center;
-        padding: 3rem 1rem 1rem;
-        border-bottom: 2px solid #228B22; /* Kept original header border for now, can adjust if needed */
+      text-align: center;
+      padding: 3rem 1rem 1rem;
+      border-bottom: 2px solid #228B22;
     }
     header h1 {
-        margin: 0;
-        font-size: 3rem;
-        color: #90ee90;
+      margin: 0;
+      font-size: 3rem;
+      color: #90ee90;
     }
     header p {
-        font-size: 1.2rem;
-        color: #ccc;
+      font-size: 1.2rem;
+      color: #ccc;
     }
     header .email {
-        font-size: 0.9rem;
-        color: #aaa;
-        margin-top: 0.5rem;
-    }
-    header .email a { /* Style for the email link */
-        color: #aaa;
-        text-decoration: none; /* Optional: Remove underline from link */
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 0.5rem;
     }
     .links, .sublinks {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 2rem;
-        margin: 2rem auto;
-        max-width: 500px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem auto;
+      max-width: 800px;
     }
-   .link, .sublink {
-    border: 2px solid #1E561E; /* Darker, less saturated green border */
-    padding: 1rem 1.5rem;
-    text-decoration: none;
-    color: #e0e0e0;
-    border-radius: 10px;
-    background-color: #111; /* Base background for buttons */
-    /* New box-shadow for glowing effect */
-    box-shadow: 0 0 7px rgba(144, 238, 144, 0.3), /* Outer glow */
-                0 0 10px rgba(144, 238, 144, 0.2), /* Inner softer glow */
-                inset 0 0 5px rgba(144, 238, 144, 0.1); /* Optional: subtle inner glow on the button face */
-    text-shadow: 0 0 3px rgba(224, 224, 224, 0.2); /* Subtle default text glow */
-    transition: background 0.3s, transform 0.2s, box-shadow 0.3s, text-shadow 0.3s, opacity 0.5s, filter 0.5s; /* Added text-shadow to transition */
-}
-
-.link:hover, .sublink:hover {
-    background: #124d12; /* Dark green hover background */
-    transform: translateY(-5px) scale(1.03);
-    /* Enhanced box-shadow for more prominent glow on hover */
-    box-shadow: 0 0 12px rgba(144, 238, 144, 0.6), /* Brighter outer glow */
-                0 0 25px rgba(144, 238, 144, 0.4), /* Wider outer glow */
-                inset 0 0 8px rgba(144, 238, 144, 0.2); /* Optional: enhanced inner glow */
-    text-shadow: 0 0 8px rgba(224, 224, 224, 0.7); /* More prominent text glow on hover */
-    filter: brightness(1.15); /* Slightly increased brightness on hover */
-}
-
-
-    /* Platform-specific button styles - adjusted gradients */
-    .link.github { background: linear-gradient(135deg, #333, #555); } /* Already quite muted, kept as is */
-    .link.twitch { background: linear-gradient(135deg, #5A3A94, #7C50E0); } /* Slightly darker/desaturated purple */
-    .link.youtube { background: linear-gradient(135deg, #B30000, #900000); } /* Darker red */
-    .link.instagram { background: linear-gradient(135deg, #C72A60, #D86830); } /* Darker/desaturated pink/orange */
-    .link.itchio { background: linear-gradient(135deg, #D84A4A, #CC3E3E); } /* Darker/desaturated red/pink */
-    
-    .sublink.snapchat { background: linear-gradient(135deg, #DDCB00, #C8B600); color: #1a1a1a; } /* Darker yellow, darker text for contrast */
-    .sublink.steam { background: linear-gradient(135deg, #1b2838, #2a475e); } /* Kept as is, fits well */
-    .sublink.epic { background: linear-gradient(135deg, #313131, #555); }    /* Kept as is, fits well */
-    .sublink.xbox { background: linear-gradient(135deg, #0E6B0E, #18A050); }  /* Darker green */
-    .sublink.playstation { background: linear-gradient(135deg, #002A70, #08357E); } /* Darker blue */
-
+    .link, .sublink {
+      border: 2px solid #228B22;
+      padding: 1rem 1.5rem;
+      text-decoration: none;
+      color: #e0e0e0;
+      border-radius: 10px;
+      background-color: #111;
+      box-shadow: 0 5px 15px rgba(34,139,34,0.4);
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s, opacity 0.5s, filter 0.5s;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    .link:hover, .sublink:hover {
+      background: #124d12;
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 10px 25px rgba(34,139,34,0.6);
+      filter: brightness(1.1);
+    }
+    .link.github { background: linear-gradient(135deg, #333, #555); }
+    .link.twitch { background: linear-gradient(135deg, #6441a5, #8b5cf6); }
+    .link.youtube { background: linear-gradient(135deg, #ff0000, #cc0000); }
+    .link.instagram { background: linear-gradient(135deg, #e1306c, #f77737); }
+    .link.itchio { background: linear-gradient(135deg, #fa5c5c, #f84e4e); }
+    .sublink.snapchat { background: linear-gradient(135deg, #fffc00, #ffee00); color: #000; }
+    .sublink.steam { background: linear-gradient(135deg, #1b2838, #2a475e); }
+    .sublink.epic { background: linear-gradient(135deg, #313131, #555); }
+    .sublink.xbox { background: linear-gradient(135deg, #107c10, #1ed760); }
+    .sublink.playstation { background: linear-gradient(135deg, #003087, #0a3d91); }
     .section-title {
-        text-align: center;
-        font-size: 1.8rem;
-        margin-top: 3rem;
-        color: #90ee90;
-        opacity: 0;
-        animation: fadeIn 1s ease forwards;
+      text-align: center;
+      font-size: 1.8rem;
+      margin-top: 3rem;
+      color: #90ee90;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
     }
     .traffic-cone {
-        font-size: 3rem;
-        text-align: center;
-        margin: 2rem 0 0;
-        opacity: 0;
-        animation: fadeIn 2s ease forwards;
+      font-size: 3rem;
+      text-align: center;
+      margin: 2rem 0 0;
+      opacity: 0;
+      animation: fadeIn 2s ease forwards;
     }
     @keyframes fadeIn {
-        to { opacity: 1; }
+      to { opacity: 1; }
     }
-</style>
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 8px #228B22; }
+      50% { box-shadow: 0 0 20px #228B22; }
+    }
+    .game-button {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: #90ee90;
+      background: #0a0a0a;
+      border: 2px solid #228B22;
+      padding: 0.5rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .game-button:hover {
+      background: #124d12;
+      transform: translateY(-50%) scale(1.1);
+    }
+    .left-button { left: 1rem; }
+    .right-button { right: 1rem; }
+  </style>
 </head>
 <body>
-    <canvas id="background"></canvas>
-    <button id="prevGameBtn">◀</button>
-    <button id="nextGameBtn">▶</button>
-    <div id="currentGameDisplay">Original Animation</div>
-
-    <header>
-        </header>
-    </body>
+  <canvas id="background"></canvas>
+  <div class="game-button left-button" onclick="alert('Previous game (coming soon)')">◀</div>
+  <div class="game-button right-button" onclick="alert('Next game (coming soon)')">▶</div>
+  <header>
     <h1>JackMarksman</h1>
     <p>Hey, I’m Shane Kintz — PC fixer, streamer, oddball dev</p>
     <div class="email">Contact: kintzshane48@gmail.com</div>
@@ -210,156 +149,53 @@
   <script>
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
-// Add these new variables at the top of your <script>
-const prevGameBtn = document.getElementById('prevGameBtn');
-const nextGameBtn = document.getElementById('nextGameBtn');
-const currentGameDisplay = document.getElementById('currentGameDisplay');
 
-const games = [
-    { name: 'Original Animation', initFunction: showOriginalAnimation },
-    { name: 'Minesweeper', initFunction: showMinesweeper },
-    { name: 'Snake', initFunction: showSnake }
-];
-let currentGameIndex = 0;
-let animationFrameId = null; // To control the original animation loop
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-// --- Modify your existing canvas and ship/invaders setup ---
-// const canvas = document.getElementById('background');
-// const ctx = canvas.getContext('2d');
-// ... (ship and invaders arrays) ...
-// Ensure these are accessible to the functions below.
+    let ship = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      width: 30,
+      height: 40
+    };
 
-// --- Slightly modify your existing draw() function ---
-function draw() {
-    // This check is now handled by starting/stopping via animationFrameId
-    // if (games[currentGameIndex].name !== 'Original Animation') {
-    //     return; // Stop if not the active game
-    // }
+    let invaders = [];
+    for (let i = 0; i < 8; i++) {
+      invaders.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        speed: 0.3 + Math.random() * 0.8
+      });
+    }
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#0a0a0a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Ship drawing logic (make sure 'ship' is defined)
-    ctx.fillStyle = '#ccc';
-    ctx.beginPath();
-    ctx.moveTo(ship.x, ship.y);
-    ctx.lineTo(ship.x - 10, ship.y + 30); // Assuming slimmer ship
-    ctx.lineTo(ship.x + 10, ship.y + 30);
-    ctx.closePath();
-    ctx.fill();
+      ctx.fillStyle = '#c0c0c0';
+      ctx.beginPath();
+      ctx.moveTo(ship.x, ship.y - ship.height / 2);
+      ctx.lineTo(ship.x - ship.width / 2, ship.y + ship.height / 2);
+      ctx.lineTo(ship.x + ship.width / 2, ship.y + ship.height / 2);
+      ctx.closePath();
+      ctx.fill();
 
-    // Invaders (asteroids) drawing logic (make sure 'invaders' is defined)
-    invaders.forEach(inv => {
-        const asteroidRadius = 35;
-        const mainAsteroidColor = '#777';
-        const spotColor = '#555';
-        const numSpots = 3;
-        const spotMaxRadius = 7;
-
-        ctx.fillStyle = mainAsteroidColor;
+      ctx.fillStyle = '#777';
+      invaders.forEach(inv => {
         ctx.beginPath();
-        ctx.arc(inv.x, inv.y, asteroidRadius, 0, Math.PI * 2);
+        ctx.arc(inv.x, inv.y, 30, 0, Math.PI * 2);
         ctx.fill();
-
-        ctx.fillStyle = spotColor;
-        for (let i = 0; i < numSpots; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const maxDist = asteroidRadius - spotMaxRadius;
-            const distance = Math.random() * maxDist;
-            const spotX = inv.x + Math.cos(angle) * distance;
-            const spotY = inv.y + Math.sin(angle) * distance;
-            const currentSpotRadius = Math.random() * (spotMaxRadius - 2) + 2;
-            ctx.beginPath();
-            ctx.arc(spotX, spotY, currentSpotRadius, 0, Math.PI * 2);
-            ctx.fill();
-        }
-
         inv.y += inv.speed;
-        if (inv.y > canvas.height + asteroidRadius) {
-            inv.y = -asteroidRadius;
-            inv.x = Math.random() * canvas.width;
+        if (inv.y > canvas.height) {
+          inv.y = -30;
+          inv.x = Math.random() * canvas.width;
         }
-    });
+      });
 
-    animationFrameId = requestAnimationFrame(draw); // Continue animation
-}
-
-// --- New functions for game switching ---
-function stopAllGames() {
-    if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-        animationFrameId = null;
+      requestAnimationFrame(draw);
     }
-    // In the future, you might add logic here to stop Minesweeper/Snake game loops
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-}
-
-function showOriginalAnimation() {
-    stopAllGames();
-    currentGameDisplay.textContent = 'Original Animation';
-    // Optional: Reset ship/invader positions if desired
-    // ship.x = canvas.width / 2;
-    // ship.y = canvas.height / 2;
-    // Re-initialize invaders if needed
-    if (!animationFrameId) { // Start only if not already running
-       draw(); // This will set animationFrameId
-    }
-}
-
-function showMinesweeper() {
-    stopAllGames();
-    currentGameDisplay.textContent = 'Minesweeper';
-    ctx.fillStyle = '#0a0a0a'; // Background
-    ctx.fillRect(0,0, canvas.width, canvas.height);
-    ctx.font = "bold 30px 'Segoe UI'";
-    ctx.fillStyle = '#90ee90';
-    ctx.textAlign = "center";
-    ctx.fillText("Minesweeper Game Area", canvas.width / 2, canvas.height / 2);
-    // Placeholder: Add Minesweeper initialization logic here
-}
-
-function showSnake() {
-    stopAllGames();
-    currentGameDisplay.textContent = 'Snake';
-    ctx.fillStyle = '#0a0a0a'; // Background
-    ctx.fillRect(0,0, canvas.width, canvas.height);
-    ctx.font = "bold 30px 'Segoe UI'";
-    ctx.fillStyle = '#90ee90';
-    ctx.textAlign = "center";
-    ctx.fillText("Snake Game Area", canvas.width / 2, canvas.height / 2);
-    // Placeholder: Add Snake initialization logic here
-}
-
-function updateGameView() {
-    games[currentGameIndex].initFunction();
-}
-
-prevGameBtn.addEventListener('click', () => {
-    currentGameIndex--;
-    if (currentGameIndex < 0) {
-        currentGameIndex = games.length - 1; // Wrap around
-    }
-    updateGameView();
-});
-
-nextGameBtn.addEventListener('click', () => {
-    currentGameIndex++;
-    if (currentGameIndex >= games.length) {
-        currentGameIndex = 0; // Wrap around
-    }
-    updateGameView();
-});
-
-// --- Initial setup ---
-// Make sure the mousemove and resize listeners don't interfere when other games are active.
-// For now, they will still affect the 'ship' object.
-// Consider adding/removing these listeners in showOriginalAnimation() vs other game modes.
-
-// Initial call to set up the first game view (Original Animation)
-updateGameView();
-// window.addEventListener('mousemove', ... ); // Keep these for the original animation
-// window.addEventListener('resize', ... ); // Keep these for the original animation
 
     draw();
 
@@ -375,3 +211,4 @@ updateGameView();
   </script>
 </body>
 </html>
+
