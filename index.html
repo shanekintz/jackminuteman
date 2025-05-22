@@ -343,15 +343,20 @@ function draw() {
       for (let j = bullets.length - 1; j >= 0; j--) {
         let bullet = bullets[j];
         if (circleRectColliding(asteroidCircle, bullet)) {
-          invaders.splice(i, 1);   // Remove asteroid
+          // --- MODIFICATION START ---
+          // Instead of deleting, reset the asteroid's position and appearance
+          inv.y = -ASTEROID_RADIUS; // Reset to top, off-screen
+          inv.x = Math.random() * canvas.width; // New random horizontal position
+          generateCraters(inv, ASTEROID_RADIUS); // Give it a new set of craters
+          // --- MODIFICATION END ---
+
           bullets.splice(j, 1);    // Remove bullet
           score += 10;
           asteroidHitByBullet = true;
-          // TODO: Potentially spawn a new asteroid to maintain count if desired
-          break; // Asteroid is gone, no need to check other bullets against it
+          break; // Asteroid is "respawned", no need to check other bullets against it
         }
       }
-
+      
       if (asteroidHitByBullet) {
         continue; // Move to the next asteroid if this one was destroyed by a bullet
       }
@@ -441,14 +446,73 @@ function draw() {
     });
   });
 
-  // Draw Score
-  ctx.fillStyle = '#e0e0e0';
-  ctx.font = '20px Segoe UI';
-  ctx.textAlign = 'left';
-  ctx.fillText('Score: ' + score, 20, 30);
-  ctx.textAlign = 'right';
-  ctx.fillText('High Score: ' + highScore, canvas.width - 20, 30);
+// --- Draw Score and High Score with Neon Boxes ---
+  const scorePadding = 10;
+  const scoreFontSize = 20;
+  const scoreBoxMargin = 15; // Margin from canvas edge
+  const neonColor = '#32cd32'; // Lime green for neon effect
+  const boxBackgroundColor = 'rgba(20, 20, 20, 0.65)'; // Dark semi-transparent
 
+  ctx.font = `${scoreFontSize}px Segoe UI`;
+  ctx.textBaseline = 'middle'; // Simplifies vertical text centering
+
+  // --- Score Box (Left) ---
+  const scoreText = 'Score: ' + score;
+  const scoreTextMetrics = ctx.measureText(scoreText);
+  const scoreBoxWidth = scoreTextMetrics.width + 2 * scorePadding;
+  const scoreBoxHeight = scoreFontSize + 2 * scorePadding;
+  const scoreBoxX = scoreBoxMargin;
+  const scoreBoxY = scoreBoxMargin;
+
+  // Draw Score Box Background
+  ctx.fillStyle = boxBackgroundColor;
+  ctx.fillRect(scoreBoxX, scoreBoxY, scoreBoxWidth, scoreBoxHeight);
+
+  // Draw Score Box Neon Outline
+  ctx.strokeStyle = neonColor;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = neonColor; // Color of the glow
+  ctx.shadowBlur = 12;         // Intensity of the glow
+  ctx.strokeRect(scoreBoxX, scoreBoxY, scoreBoxWidth, scoreBoxHeight);
+  
+  // Draw Score Text (crisp, no shadow directly on text for readability)
+  ctx.shadowBlur = 0; // Turn off shadow for the text itself
+  ctx.fillStyle = '#e0e0e0';
+  ctx.textAlign = 'left';
+  ctx.fillText(scoreText, scoreBoxX + scorePadding, scoreBoxY + scoreBoxHeight / 2);
+  
+  // Reset shadow effects if other elements shouldn't glow
+  ctx.shadowColor = 'transparent'; 
+
+  // --- High Score Box (Right) ---
+  const highScoreText = 'High Score: ' + highScore;
+  const highScoreTextMetrics = ctx.measureText(highScoreText);
+  const highScoreBoxWidth = highScoreTextMetrics.width + 2 * scorePadding;
+  const highScoreBoxHeight = scoreFontSize + 2 * scorePadding; // Same height
+  const highScoreBoxX = canvas.width - highScoreBoxWidth - scoreBoxMargin;
+  const highScoreBoxY = scoreBoxMargin; // Same top margin
+
+  // Draw High Score Box Background
+  ctx.fillStyle = boxBackgroundColor;
+  ctx.fillRect(highScoreBoxX, highScoreBoxY, highScoreBoxWidth, highScoreBoxHeight);
+
+  // Draw High Score Box Neon Outline
+  ctx.strokeStyle = neonColor;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = neonColor;
+  ctx.shadowBlur = 12;
+  ctx.strokeRect(highScoreBoxX, highScoreBoxY, highScoreBoxWidth, highScoreBoxHeight);
+
+  // Draw High Score Text
+  ctx.shadowBlur = 0; // Turn off shadow for the text
+  ctx.fillStyle = '#e0e0e0';
+  ctx.textAlign = 'right';
+  ctx.fillText(highScoreText, highScoreBoxX + highScoreBoxWidth - scorePadding, highScoreBoxY + highScoreBoxHeight / 2);
+
+  // Final reset of shadow effects
+  ctx.shadowColor = 'transparent';
+  // --- End of Score Display ---
+  
   requestAnimationFrame(draw);
 }
     draw();
