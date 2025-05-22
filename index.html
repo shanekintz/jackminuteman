@@ -212,6 +212,7 @@
   <script>
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
+    const ASTEROID_RADIUS = 30;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -223,43 +224,94 @@
       height: 40
     };
 
-    let invaders = [];
-    for (let i = 0; i < 8; i++) {
-      invaders.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        speed: 0.3 + Math.random() * 0.8
-      });
-    }
+ let invaders = [];
+for (let i = 0; i < 8; i++) {
+  let newInvader = { // <-- Changed to let for modification before push
+    x: Math.random() * canvas.width,
+    y: Math.random() * (canvas.height - ASTEROID_RADIUS * 2) + ASTEROID_RADIUS, // Start fully on screen
+    speed: 0.3 + Math.random() * 0.8,
+    craters: [] // Initialize empty craters array
+  };
+  generateCraters(newInvader, ASTEROID_RADIUS); // Generate craters for the new invader
+  invaders.push(newInvader);
+}
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // ... (after your ship and invaders array initialization)
 
-      ctx.fillStyle = '#c0c0c0';
+function generateCraters(asteroid, mainRadius) {
+  asteroid.craters = []; // Initialize or reset craters array
+  const numCraters = Math.floor(Math.random() * 3) + 2; // 2 to 4 craters
+
+  for (let i = 0; i < numCraters; i++) {
+    // Crater radius: 10% to 30% of the asteroid's radius
+    const craterRadius = mainRadius * (0.1 + Math.random() * 0.2);
+
+    // Position the crater randomly within the asteroid's body
+    const angle = Math.random() * Math.PI * 2; // Random angle
+    // Random distance from the asteroid's center, ensuring crater is well within the main body
+    const distanceFromCenter = Math.random() * (mainRadius - craterRadius * 1.5); // Ensure it's not too close to the edge
+
+    const x_offset = Math.cos(angle) * distanceFromCenter;
+    const y_offset = Math.sin(angle) * distanceFromCenter;
+
+    asteroid.craters.push({
+      x_offset: x_offset,
+      y_offset: y_offset,
+      radius: craterRadius
+    });
+  }
+}
+
+   function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#0a0a0a'; // Background
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw Ship (your existing ship drawing code)
+  ctx.fillStyle = '#c0c0c0';
+  ctx.beginPath();
+  ctx.moveTo(ship.x, ship.y - ship.height / 2);
+  ctx.lineTo(ship.x - ship.width / 2, ship.y + ship.height / 2);
+  ctx.lineTo(ship.x + ship.width / 2, ship.y + ship.height / 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Draw Invaders (Asteroids)
+  invaders.forEach(inv => {
+    // Main asteroid body
+    ctx.fillStyle = '#777'; // Asteroid base color (medium grey)
+    ctx.beginPath();
+    ctx.arc(inv.x, inv.y, ASTEROID_RADIUS, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Draw Craters
+    ctx.fillStyle = '#555'; // Crater color (darker grey)
+    inv.craters.forEach(crater => {
       ctx.beginPath();
-      ctx.moveTo(ship.x, ship.y - ship.height / 2);
-      ctx.lineTo(ship.x - ship.width / 2, ship.y + ship.height / 2);
-      ctx.lineTo(ship.x + ship.width / 2, ship.y + ship.height / 2);
-      ctx.closePath();
+      ctx.arc(
+        inv.x + crater.x_offset, // Position crater relative to asteroid center
+        inv.y + crater.y_offset,
+        crater.radius,
+        0,
+        Math.PI * 2
+      );
       ctx.fill();
+    });
 
-      ctx.fillStyle = '#777';
-      invaders.forEach(inv => {
-        ctx.beginPath();
-        ctx.arc(inv.x, inv.y, 30, 0, Math.PI * 2);
-        ctx.fill();
-        inv.y += inv.speed;
-        if (inv.y > canvas.height) {
-          inv.y = -30;
-          inv.x = Math.random() * canvas.width;
-        }
-      });
-
-      requestAnimationFrame(draw);
+    // Move asteroid
+    inv.y += inv.speed;
+    // Reset asteroid if it goes off-screen
+    // (Ensure this logic is only once per invader, either here or where you had it before)
+    // The modification from step 3 already covers this:
+    if (inv.y - ASTEROID_RADIUS > canvas.height) {
+        inv.y = -ASTEROID_RADIUS;
+        inv.x = Math.random() * canvas.width;
+        generateCraters(inv, ASTEROID_RADIUS);
     }
+  });
 
+  requestAnimationFrame(draw);
+}
     draw();
 
     window.addEventListener('mousemove', (e) => {
