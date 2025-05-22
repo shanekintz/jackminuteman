@@ -5,6 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JackMarksman | Home</title>
   <style>
+
+    /* Custom Modal Styles */
+.modal-overlay {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top of everything */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 10, 10, 0.85); /* Dark semi-transparent overlay */
+  justify-content: center; /* Center the modal-box */
+  align-items: center; /* Center the modal-box */
+}
+
+.modal-overlay.active {
+  display: flex; /* Show the modal by changing display to flex */
+}
+
+.modal-box {
+  background-color: #1c1c1c; /* Slightly lighter than page background */
+  color: #e0e0e0;
+  padding: 25px 30px;
+  border: 2px solid #228B22; /* Your theme's green */
+  border-radius: 10px;
+  width: 90%;
+  max-width: 450px; /* Adjust as needed */
+  box-shadow: 0 8px 25px rgba(34,139,34,0.5);
+  position: relative; /* For positioning the close button */
+  text-align: center;
+  font-size: 1.1rem;
+  animation: modalOpen 0.3s ease-out; /* Optional: open animation */
+}
+
+@keyframes modalOpen {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-close-button {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.modal-close-button:hover,
+.modal-close-button:focus {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+    
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -139,13 +195,20 @@
   <div class="sublinks">
     <a class="sublink snapchat" href="#">Snapchat</a>
     <a class="sublink steam" href="#">Steam</a>
-    <a class="sublink epic" href="#" onclick="alert('Add me on Epic: JackMarksman')">Epic</a>
-    <a class="sublink xbox" href="#">Xbox</a>
-    <a class="sublink playstation" href="#">PlayStation</a>
+    <a class="sublink epic" href="javascript:void(0);" onclick="showUsernamePopup('Add me on Epic: JackMarksman')">Epic</a>
+    <a class="sublink xbox" href="javascript:void(0);" onclick="showUsernamePopup('Add me on Xbox: YOUR_XBOX_USERNAME_HERE')">Xbox</a>
+    <a class="sublink playstation" href="javascript:void(0);" onclick="showUsernamePopup('Add me on PlayStation: YOUR_PLAYSTATION_USERNAME_HERE')">PlayStation</a>
   </div>
 
   <div class="traffic-cone">🛑🚧🛑</div>
 
+  <div id="usernameModal" class="modal-overlay">
+  <div class="modal-box">
+    <span class="modal-close-button">&times;</span>
+    <p id="modalUsernameText"></p>
+  </div>
+</div>
+  
   <script>
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
@@ -208,6 +271,43 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
+  </script>
+  <script>
+    // --- Add this to your existing script ---
+
+// Get modal elements
+const usernameModal = document.getElementById('usernameModal');
+const modalUsernameTextElement = document.getElementById('modalUsernameText');
+const closeModalButton = usernameModal.querySelector('.modal-close-button'); // More specific selector
+
+// Function to open the modal with a specific message
+function showUsernamePopup(message) {
+  modalUsernameTextElement.textContent = message;
+  usernameModal.classList.add('active'); // Use 'active' class to show
+}
+
+// Function to close the modal
+function hideUsernamePopup() {
+  usernameModal.classList.remove('active');
+}
+
+// Event listeners
+// Close modal when clicking the 'x' button
+closeModalButton.addEventListener('click', hideUsernamePopup);
+
+// Close modal when clicking on the overlay (outside the modal box)
+usernameModal.addEventListener('click', function(event) {
+  if (event.target === usernameModal) { // Check if the click is on the overlay itself
+    hideUsernamePopup();
+  }
+});
+
+// Optional: Close modal with the Escape key
+window.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape' && usernameModal.classList.contains('active')) {
+    hideUsernamePopup();
+  }
+});
   </script>
 </body>
 </html>
