@@ -213,10 +213,41 @@
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
     const ASTEROID_RADIUS = 30;
+    
+    let bullets = [];
+    const BULLET_SPEED = 7;
+    const BULLET_WIDTH = 4; // Slimmer bullets
+    const BULLET_HEIGHT = 15;
+    const BULLET_COLOR = '#32cd32'; // Lime green
+
+    let score = 0;
+    let highScore = 0; // To keep track of the best score
+
+    let shipIsAlive = true;
+    const RESPAWN_DELAY = 2000; // 2 seconds in milliseconds
+    const SHOOT_COOLDOWN = 200; // milliseconds between shots
+    let canShoot = true;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    // ... (after canvas setup) ...
+
+window.addEventListener('mousedown', () => {
+  if (shipIsAlive && canShoot) {
+    bullets.push({
+      x: ship.x - BULLET_WIDTH / 2, // Center the bullet horizontally
+      y: ship.y - ship.height / 2,  // Start from the ship's "nose"
+      width: BULLET_WIDTH,
+      height: BULLET_HEIGHT,
+    });
+    canShoot = false;
+    setTimeout(() => {
+      canShoot = true;
+    }, SHOOT_COOLDOWN);
+  }
+});
+    
     let ship = {
       x: canvas.width / 2,
       y: canvas.height / 2,
@@ -262,34 +293,145 @@ function generateCraters(asteroid, mainRadius) {
   }
 }
 
-   function draw() {
+    function circleRectColliding(circle, rect) {
+  // Find the closest point to the circle within the rect
+  let closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.width));
+  let closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.height));
+
+  // Calculate distance between circle's center and this closest point
+  let distanceX = circle.x - closestX;
+  let distanceY = circle.y - closestY;
+  let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+
+  // If the distance is less than the circle's radius squared, an intersection has occurred
+  return distanceSquared < (circle.radius * circle.radius);
+}
+    
+function draw() {
+  // 1. UPDATE POSITIONS & STATES
+  // Ship position is updated by 'mousemove' event listener
+
+  // Update bullets
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    bullets[i].y -= BULLET_SPEED;
+    if (bullets[i].y + bullets[i].height < 0) { // Remove bullets that go off-screen
+      bullets.splice(i, 1);
+    }
+  }
+
+  // Update invaders (asteroids)
+  invaders.forEach(inv => {
+    inv.y += inv.speed;
+  });
+
+  // 2. HANDLE GAME LOGIC & COLLISIONS
+  if (shipIsAlive) {
+    // Check for collisions only if ship is alive
+    const shipBoundingBox = {
+      x: ship.x - ship.width / 2,
+      y: ship.y - ship.height / 2, // Triangle top point
+      width: ship.width,
+      height: ship.height
+    };
+
+    for (let i = invaders.length - 1; i >= 0; i--) {
+      let inv = invaders[i];
+      const asteroidCircle = { x: inv.x, y: inv.y, radius: ASTEROID_RADIUS };
+      let asteroidHitByBullet = false;
+
+      // Check Bullet-Asteroid collisions
+      for (let j = bullets.length - 1; j >= 0; j--) {
+        let bullet = bullets[j];
+        if (circleRectColliding(asteroidCircle, bullet)) {
+          invaders.splice(i, 1);   // Remove asteroid
+          bullets.splice(j, 1);    // Remove bullet
+          score += 10;
+          asteroidHitByBullet = true;
+          // TODO: Potentially spawn a new asteroid to maintain count if desired
+          break; // Asteroid is gone, no need to check other bullets against it
+        }
+      }
+
+      if (asteroidHitByBullet) {
+        continue; // Move to the next asteroid if this one was destroyed by a bullet
+      }
+
+      // Check Asteroid-Ship collision
+      if (circleRectColliding(asteroidCircle, shipBoundingBox)) {
+        shipIsAlive = false;
+        canShoot = false; // Prevent shooting while respawning
+        // invaders.splice(i, 1); // Optionally destroy asteroid that hit the ship
+        
+        if (score > highScore) {
+          highScore = score;
+        }
+        score = 0; // Reset score
+
+        // Start respawn timer
+        setTimeout(() => {
+          shipIsAlive = true;
+          canShoot = true;
+          // Ship will reappear at current mouse position
+          // You could also reset ship to center:
+          // ship.x = canvas.width / 2;
+          // ship.y = canvas.height * 0.8;
+        }, RESPAWN_DELAY);
+        break; // Ship is hit, no need to check other asteroids this frame for ship collision
+      }
+    }
+  }
+
+  // Handle asteroids going off-screen (reset them)
+  invaders.forEach(inv => {
+    if (inv.y - ASTEROID_RADIUS > canvas.height) {
+      inv.y = -ASTEROID_RADIUS;
+      inv.x = Math.random() * canvas.width;
+      generateCraters(inv, ASTEROID_RADIUS); // Regenerate craters for the "new" asteroid
+    }
+  });
+
+
+  // 3. DRAW EVERYTHING
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = '#0a0a0a'; // Background
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw Ship (your existing ship drawing code)
-  ctx.fillStyle = '#c0c0c0';
-  ctx.beginPath();
-  ctx.moveTo(ship.x, ship.y - ship.height / 2);
-  ctx.lineTo(ship.x - ship.width / 2, ship.y + ship.height / 2);
-  ctx.lineTo(ship.x + ship.width / 2, ship.y + ship.height / 2);
-  ctx.closePath();
-  ctx.fill();
+  // Draw Ship or Respawn Message
+  if (shipIsAlive) {
+    ctx.fillStyle = '#c0c0c0'; // Ship color
+    ctx.beginPath();
+    ctx.moveTo(ship.x, ship.y - ship.height / 2);
+    ctx.lineTo(ship.x - ship.width / 2, ship.y + ship.height / 2);
+    ctx.lineTo(ship.x + ship.width / 2, ship.y + ship.height / 2);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    ctx.fillStyle = '#ffc107'; // Warning yellow for respawn text
+    ctx.font = '24px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('CRASHED! Respawning...', canvas.width / 2, canvas.height / 2);
+  }
+
+  // Draw Bullets
+  ctx.fillStyle = BULLET_COLOR;
+  bullets.forEach(b => {
+    ctx.fillRect(b.x, b.y, b.width, b.height);
+  });
 
   // Draw Invaders (Asteroids)
   invaders.forEach(inv => {
     // Main asteroid body
-    ctx.fillStyle = '#777'; // Asteroid base color (medium grey)
+    ctx.fillStyle = '#777';
     ctx.beginPath();
     ctx.arc(inv.x, inv.y, ASTEROID_RADIUS, 0, Math.PI * 2);
     ctx.fill();
 
     // Draw Craters
-    ctx.fillStyle = '#555'; // Crater color (darker grey)
+    ctx.fillStyle = '#555';
     inv.craters.forEach(crater => {
       ctx.beginPath();
       ctx.arc(
-        inv.x + crater.x_offset, // Position crater relative to asteroid center
+        inv.x + crater.x_offset,
         inv.y + crater.y_offset,
         crater.radius,
         0,
@@ -297,18 +439,15 @@ function generateCraters(asteroid, mainRadius) {
       );
       ctx.fill();
     });
-
-    // Move asteroid
-    inv.y += inv.speed;
-    // Reset asteroid if it goes off-screen
-    // (Ensure this logic is only once per invader, either here or where you had it before)
-    // The modification from step 3 already covers this:
-    if (inv.y - ASTEROID_RADIUS > canvas.height) {
-        inv.y = -ASTEROID_RADIUS;
-        inv.x = Math.random() * canvas.width;
-        generateCraters(inv, ASTEROID_RADIUS);
-    }
   });
+
+  // Draw Score
+  ctx.fillStyle = '#e0e0e0';
+  ctx.font = '20px Segoe UI';
+  ctx.textAlign = 'left';
+  ctx.fillText('Score: ' + score, 20, 30);
+  ctx.textAlign = 'right';
+  ctx.fillText('High Score: ' + highScore, canvas.width - 20, 30);
 
   requestAnimationFrame(draw);
 }
